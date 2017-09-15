@@ -4,6 +4,14 @@ const Snoowrap = require('snoowrap');
 const Snoostorm = require('snoostorm');
 const app = express()
 
+app.get('/', function (req, res) {
+  res.sendFile(__dirname + '/index.html');
+})
+
+app.listen(process.env.PORT || 3000, function () {
+  console.log('Example app listening on port 3000!')
+})
+
   // Build Snoowrap and Snoostorm clients
 const r = new Snoowrap({
     userAgent: 'reddit-bot-example-node',
@@ -16,7 +24,7 @@ const client = new Snoostorm(r);
 
 // Configure options for stream: subreddit & results per query
 const streamOpts = {
-    subreddit: 'nepal',
+    subreddit: 'subredditdrama',
     results: 25
 };
 
@@ -25,10 +33,11 @@ const comments = client.CommentStream(streamOpts); // eslint-disable-line
 
 // On comment, perform whatever logic you want to do
 comments.on('comment', (comment) => {
+    console.log(comment.body.search(/dashain/i));
     if (comment.body.search(/dashain/i) != -1 ) {
         comment.reply('demo bot for da$hain :)');
     }
     else{
-        console.log(comment.id);
+        console.log(comment.body);
     }
 });
